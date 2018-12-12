@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BridgePackage>
+  <App Name="Application1" Version="1.0" GUID="AP663719D27D0F4BF3992D7C4562C820F47E2B15D0EB6000000F00000000D0EB600000010000100000000000000000000000000000000000000000000000000000000000000000C1" Description="" FullApp="True" DataPackage="True" BridgeVersionCreated="15.0" BridgeVersionChanged="" ObjectDateCreated="2018-11-21T10:59:29" ObjectDateChanged="" ExportFormat="Custom" DistributionMode="Standard" AuthorID="D0EB6000">
+    <AppObjects>
+      <Object Type="TB" GUID="TBEF7852ABB6F749A2BBA0155DA21EA3027E2B15D0EB6000000F00000000D0EB600000010000100000000000000000000000000000000000000000000000000000000000000000F2" Name="artists" AppInitialSignature="D0EB600000010000" ObjectInitialSignature="D0EB600000010000" ObjectDateAdded="" BridgeVersionCreated="15.0" BridgeVersionChanged="15.0" ObjectDateCreated="2018-11-01T13:01:49" ObjectDateChanged="2018-11-01T23:23:27" DefaultImportAction="NEW" File="artists_2018-Nov-21_1859.xml" DataDateUpdated="2018-11-08T01:59:31" FileType="XMLTables" />
+    </AppObjects>
+  </App>
+</BridgePackage>

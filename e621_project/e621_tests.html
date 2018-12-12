@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<!-- Tests to get data from the e621/e926 API, Html/Ajax version.
+this version have problens cause CORS blocks the acess from the browser.
+the API acess will need to be done by a server_side langue to works. -->
+<html>
+    <head>
+        <title>e621 learning tests(by Sstalker on e621)</title>
+        <script src="lib/jquery-3.3.1.js"></script>
+        <script>
+            $(document).ready(function(){
+                $.ajax({
+                    url: "https://e621.net/post/index.json?tags=pokehidden&limit=3",
+                    type: "GET"
+                })
+                .done(function(e621_return){
+                    console.log(e621_return);
+                    alert(e621_return[0].id);
+                });
+            })
+        </script>
+    </head>
+    <body>
+        
+    </body>
+</html>

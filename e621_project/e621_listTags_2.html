@@ -1,0 +1,75 @@
+<html ng-app="teste">
+<head>
+    <title>List of the 75.000 biggest tags in e621</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
+    <style>
+        .jumbotron{
+            width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table{
+            margin-top: 20px;
+        }
+        .form-control {
+            margin-bottom: 5px;
+        }
+        .select{
+            background-color: blueviolet;
+        }
+        .negrito{
+            font-weight: bold;
+        }
+    </style>
+    <script src="lib/js/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        angular.module("teste", []);
+        angular.module("teste").controller("testeCtrl", function ($scope, $http) {
+            $scope.app = "Teste";
+            var tagsList = [];
+            
+            var loadTags = function (){
+                $(document).ready(function(){
+                    $.ajax({
+                        url: "https://e621.net/tag/index.json?&order=count&limit=5&page=1",
+                        type: "GET"
+                    })
+                    .done(function(e621_return){
+                        tagsList = e621_return; 
+                    });
+                });
+                
+                $scope.ordenarPor = function (campo) {
+                    $scope.ordenacao = campo;
+                    $scope.isCrescent = !$scope.isCrescent;
+                };
+            };
+            console.log(tagsList);
+            loadTags();
+        });
+    </script>
+</head>
+<body ng-controller="testeCtrl">
+    <div class="jumbotron">
+        <h3>{{app}}</h3>
+        <table class="table table-striped">
+            <tr>
+                <th><a href="" ng-click="ordenarPor('id')">id</a></th>
+                <th><a href="" ng-click="ordenarPor('name')">name</a></th>
+                <th><a href="" ng-click="ordenarPor('count')">count</a></th>
+                <th><a href="" ng-click="ordenarPor('type')">type</a></th>
+            </tr>
+            <tr ng-repeat="contato in tagsList">
+                <td>{{contato.id}}</td>
+                <td>{{contato.name}}</td>
+                <td>{{contato.count}}</td>
+                <td>{{contato.type}}</td>
+            </tr>            
+        </table>
+        <hr/>
+    </div>
+</body>
+</html>

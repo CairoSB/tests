@@ -1,0 +1,61 @@
+<html ng-app="CQlinks">
+<head>
+    <title>List of the 75.000 biggest tags in e621</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
+    <style>
+        .jumbotron{
+            width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table{
+            margin-top: 20px;
+        }
+        .form-control {
+            margin-bottom: 5px;
+        }
+    </style>
+    <script src="lib/js/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        angular.module("e621_listTags", []);
+        angular.module("e621_listTags").controller("e621_listTagsCtrl", function ($scope) {
+            $scope.app = "e621_listTags";
+            $scope.tagsList = [];
+            $(document).ready(function(){
+                $.ajax({
+                    url: "https://e621.net/tag/index.json?&order=count&limit=500&page=1",
+                    type: "GET"
+                })
+                .done(function(e621_return){
+                    console.log(e621_return);
+                    console.log(e621_return[0]);
+                    $scope.tagsList = e621_return;
+                });
+            })
+        })
+    </script>
+</head>
+<body ng-controller="e621_listTagsCtrl">
+    <div class="jumbotron">
+        <h3>Tags</h3>
+        <table class="table table-striped">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Count</th>
+                <th>Type</th>
+            </tr>
+            <tr ng-repeat="row in e621_return">
+                <td>{{e621_return.id}}</td>
+                <td>{{e621_return.name}}</td>
+                <td>{{e621_return.count}}</td>
+                <td>{{e621_return.type}}</td>
+            </tr>            
+        </table>
+        <hr/>
+    </div>
+</body>
+</html>

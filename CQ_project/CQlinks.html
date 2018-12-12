@@ -1,0 +1,73 @@
+<html ng-app="Colt Quest">
+<head>
+    <!-- Main page of the CQ project, layout bases in the Rodrigo Branas Angular tutorial, it uses Angularjs and BootStrap
+    It supose to create a table with the: chapterNumber, ThredNumber, Epub(link to download) and releaseDate
+    It have as well a input to add new chapters, it requires: chapterN, threadN, date and a password to add
+    the password is QuestColt and is verified by a pattern so is not secure, is only retrict any one to mess
+    the epub link is not needed to add cause it is created using the thread number automatically
+    this page depends of other pages to get and add data to the database -->
+    <title>Links of Colt Quest</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
+    <style>
+        .jumbotron{
+            width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table{
+            font-family: "Lucida Sans Typewriter",monospace;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .form-control {
+            margin-bottom: 5px;
+        }
+    </style>
+    <script src="lib/js/angular.min.js"></script>
+    <script>
+        angular.module("Colt Quest", []);
+        angular.module("Colt Quest").controller("CQ_Ctrl", function ($scope, $http) {
+            $scope.app = "Colt Quest";
+            $scope.chapters = [];
+            $http.get('http://localhost:7000/phpToJson.php')
+                .then(function successCallback(res) {
+                $scope.chapters = res.data.records;
+                console.log($scope.chapters);
+                }, function errorCallback(err) {
+                console.log("Error: " + angular.toJson(err));
+            });
+            // $http.get("http://localhost:7000/phpToJson.php")
+            //     .then(function (response) {$scope.chapters = response.data.records;});
+        });  
+    </script>
+</head>
+<body ng-controller="CQ_Ctrl">
+    <div class="jumbotron">
+        <h3>{{app}}</h3>
+        <form name="chapterForm" ng-model="chapterForm" action="Send_dataToBd_byHand.php" method="POST">
+            <input class="form-control" type="text" name="addPassword" ng-model="addPassword" ng-required="true" ng-pattern="/QuestColt/" placeholder="Password"/>
+            <input class="form-control" type="text" name="chapter" ng-model="chapter" ng-required="true" placeholder="Chapter number" ng-minlength="1"/>
+            <input class="form-control" type="text" name="thread" ng-model="theread" ng-required="true"  placeholder="Thread number" ng-minlength="8"/>
+            <input class="form-control" type="text" name="date" ng-model="date" placeholder="Publication Date (yyyy-mm-dd)"ng-required="true" ng-pattern="/^20[1-9][1-9]-(([0][2])-([0-2][0-9])|([0][469]|[1][1])-([0-2][0-9]|[3][0])|([0][13578]|[1][02])-([0-2][0-9]|[3][0-1]))$/"/>
+            <button class="btn btn-primary btn-block" type="submit" ng-disabled="chapterForm.$invalid">ADD</button>
+        </form>
+        <table class="table table-striped">
+            <tr>
+                <th style="text-align:center">Chapters</th>
+                <th style="text-align:center">Threads</th>
+                <th style="text-align:center">EPUB Download</th>
+                <th style="text-align:center">Publication date</th>
+            </tr>
+            <tr ng-class="" ng-repeat="chapter in chapters">
+                <td>{{chapter.chapterNumber}}</td>
+                <td>{{chapter.threadNumber}}</td>
+                <td><a href={{chapter.epub}}>Download epub</a></td>
+                <td>{{chapter.publicationDate | date: 'dd-MMM-yy'}}</td>
+            </tr>         
+        </table>
+        <hr/>
+    </div>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<html ng-app="teste">
+<head>
+    <title>Teste 1</title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/bootstrap.css">
+    <style>
+        .jumbotron{
+            width: 600px;
+            text-align: center;
+            margin-top: 20px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .table{
+            margin-top: 20px;
+        }
+        .form-control {
+            margin-bottom: 5px;
+        }
+        .select{
+            background-color: blueviolet;
+        }
+        .negrito{
+            font-weight: bold;
+        }
+    </style>
+    <script src="lib/js/angular.min.js"></script>
+    <script>
+        angular.module("teste", []);
+        angular.module("teste").controller("testeCtrl", function ($scope, $http) {
+            $scope.app = "Teste";
+            //Abaixo, criando um array e colocando no scope
+            $scope.contatos = [
+                //Cada {}, é uma linha e cada , separa uma coluna
+                // antes dos : vem o nome da coluna e depois dos : os dados ou valores
+                {nome: "Cairo", telefone: "981171226"},
+                {nome: "Haros", telefone: "69696969"},
+                {nome: "Calheiros", telefone: "00000000"}
+            ];
+            $scope.operadoras = [
+                {nome: "Oi", ddd: 14, tipo: "celular"},
+                {nome: "Tim", ddd: 15, tipo: "celular"},
+                {nome: "Vivo", ddd: 16, tipo: "celular"},
+                {nome: "Claro", ddd: 17, tipo: "celular"},
+                {nome: "GVT", ddd: 22, tipo: "fixo"},
+                {nome: "Embratel", ddd: 23, tipo: "fixo"}
+            ];
+
+            var carregar = function () {
+                $http.get("");
+            };
+            //criando função para adicionar contatos ao arrey de contatos
+            //adiciona uma linha nova ao array com o push
+            //usa "angular.copy(contato)" pois se usar apenas o contato ao apagar ou editar iria modificar no array tambem
+            //ao invez do angular.copy() poderia se usar tambem "delete $scope.contato" para resolver esse problema
+            $scope.add = function (contato) {
+                $scope.contatos.push(angular.copy(contato));
+                delete $scope.contato;
+                $scope.contatoForm.$setPristine();
+            };
+            $scope.delet = function (contatos) {
+                $scope.contatos = contatos.filter(function (contato){
+                    if (!contato.select) return contato;
+                });
+            };
+            $scope.isContatoSelect = function (contatos){
+                return contatos.some(function (contato) {
+                    return contato.select;
+                });
+            };
+            $scope.ordenarPor = function (campo) {
+                $scope.ordenacao = campo;
+                $scope.isCrescent = !$scope.isCrescent;
+            };
+            carregar();
+        });  
+    </script>
+</head>
+<body ng-controller="testeCtrl">
+    <div class="jumbotron">
+        <h3>{{app}}</h3>
+        <input class="form-control" type="text" ng-model="busca" placeholder="Pesquise aqui." />
+        <table class="table table-striped">
+            <tr>
+                <th></th>
+                <th><a href="" ng-click="ordenarPor('nome')">Nome</a></th>
+                <th><a href="" ng-click="ordenarPor('telefone')">Telefone</a></th>
+                <th>Operadora</th>
+            </tr>
+            <!-- Aplica a class(estilo/CSS) chamado "select" apenas se "contatos.select" = true
+            Conflita com a class acima, "table-striped" pois ela tambem muda a cor de fundo.
+            passa por todos contatos no array contatos um a um até o ultimo -->
+            <tr ng-class="{select: contato.select}" ng-repeat="contato in contatos | filter:busca | orderBy: ordenacao: isCrescent">
+                <td><input type="checkbox" ng-model="contato.select"/></td>
+                <td>{{contato.nome | uppercase}}</td>
+                <td>{{contato.telefone}}</td>
+                <td>{{contatos.operadora.nome}}</td>
+                <!-- Desta maneira acima mostraria o key que é o nome da coluna, neste caso "nome"
+                e concatenar com - e o valor interno da coluna, como "cairo" ou "haros"
+                {{key + ' - ' + value}} 
+                Desta maneira este segundo repeat pasaria por cada coluna pegando o valor
+                e não precisariamos por manualmente cada <td>, mas neste caso não podemos usar
+                pois a operadora é um objeto, portanto pegaria e mostraria o objeto inteiro.
+                <td> ng-repeat="(key,value) in contato"> ... </td> -->
+            </tr>            
+        </table>
+        <hr/>
+        <form name="contatoForm">
+            <input class="form-control" type="text" ng-model="contato.nome" name="nome" ng-required="true" placeholder="Nome" ng-minlength="3"/>
+            <input class="form-control" type="text" ng-model="contato.telefone" name="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" placeholder="Telefone (ex: 00000-0000)"/>
+            <!-- Criando um campo para selecionar operadoras entre as armasenadas no array operadoras
+            mostrando no select o nome da operadora(operadora.nome) e agrupa por tipo -->
+            <select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome group by operadora.tipo for operadora in operadoras">
+                <!-- Usando option para setar o valor defull -->
+                <option value="">Selecione a operadora</option>
+            </select>
+        </form>
+        <div ng-show="contatoForm.nome.$error.required && contatoForm.nome.$dirty" class="alert alert-danger">
+            Por favor, preencha o campo nome!
+        </div>
+        <div ng-show="contatoForm.nome.$error.minlength" class="alert alert-danger">
+            Nome precisa ter no minimo 3 caracteres!
+        </div>
+        <div ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty" class="alert alert-danger">
+                Por favor, preencha o campo telefone!
+        </div>
+        <div ng-show="contatoForm.telefone.$error.pattern" class="alert alert-danger">
+                O telefone deve ter o formato 0000-0000 ou 00000-0000.
+        </div>
+        <!-- Botão para adicionar novo contato ao array contatos usando a função add
+        Disable desabilita o botão para não ser usado caso: nome ou telefone estiverem vazios. -->
+        <button class="btn btn-primary btn-block" ng-click="add(contato)" ng-disabled="contatoForm.$invalid">ADD</button>
+        <button class="btn btn-danger btn-block" ng-click="delet(contatos)" ng-show="isContatoSelect(contatos)" >Delet</button>
+    </div>
+</body>
+</html>
