@@ -5,7 +5,7 @@
   "author": "Scottibr",
   "scripts": {
     "prestart": "npm install",
-    "start": "harp server --port $PORT"
+    "start": "harp server"
   },
   "license": "ISC",
   "dependencies": {
