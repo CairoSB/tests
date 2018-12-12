@@ -2,15 +2,13 @@
   "name": "local_test",
   "version": "1.0.0",
   "description": "testing create site server",
+  "author": "Scottibr",
   "scripts": {
     "prestart": "npm install",
     "start": "harp server --port $PORT"
   },
-  "author": "Scottibr",
   "license": "ISC",
   "dependencies": {
-    "harp": "*",
-    "express": "*",
-    "cors": "*"
+    "harp": "*"
   }
 }
