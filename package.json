@@ -4,13 +4,13 @@
   "description": "testing create site server",
   "scripts": {
     "prestart": "npm install",
-    "start": "http-server -a localhost -p 7000 -c-1 --cors"
+    "start": "harp server --port $PORT"
   },
   "author": "Scottibr",
   "license": "ISC",
   "dependencies": {
+    "harp": "*",
     "express": "*",
-    "cors": "*",
-    "http-server": "^0.11.1"
+    "cors": "*"
   }
 }
